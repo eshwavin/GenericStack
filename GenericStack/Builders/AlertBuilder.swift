@@ -37,7 +37,7 @@ class AlertBuilder {
         
     }
     
-    public func addAction(title: String = "", style: UIAlertActionStyle = .default, handler: (() -> ())? = {}) -> Self {
+    public func addAction(title: String = "", style: UIAlertAction.Style = .default, handler: (() -> ())? = {}) -> Self {
         alertController.addAction(UIAlertAction(title: title, style: style, handler: { _ in
             handler?()
         }))

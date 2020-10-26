@@ -27,6 +27,10 @@
 		1131B5892540881000BD3FE0 /* RepositoryAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B5882540881000BD3FE0 /* RepositoryAssembly.swift */; };
 		1131B58B254088B100BD3FE0 /* NetworkAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B58A254088B100BD3FE0 /* NetworkAssembly.swift */; };
 		1131B58D254088C000BD3FE0 /* ServiceAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B58C254088C000BD3FE0 /* ServiceAssembly.swift */; };
+		1152B38525465E4D00D8E8BB /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1152B38425465E4D00D8E8BB /* UIViewController+Extensions.swift */; };
+		1152B3872546600C00D8E8BB /* UINavigationController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1152B3862546600C00D8E8BB /* UINavigationController+Extensions.swift */; };
+		1152B3892546618B00D8E8BB /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1152B3882546618B00D8E8BB /* UIColor+Extensions.swift */; };
+		1152B38B2546629100D8E8BB /* Result+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1152B38A2546629100D8E8BB /* Result+Extension.swift */; };
 		11770D5C2542649B00A912F4 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11770D5A2542649B00A912F4 /* HomeViewController.swift */; };
 		11770D5D2542649B00A912F4 /* HomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11770D5B2542649B00A912F4 /* HomeViewController.xib */; };
 		11770D5F2542656300A912F4 /* HomeViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11770D5E2542656300A912F4 /* HomeViewPresenter.swift */; };
@@ -67,6 +71,10 @@
 		1131B5882540881000BD3FE0 /* RepositoryAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryAssembly.swift; sourceTree = "<group>"; };
 		1131B58A254088B100BD3FE0 /* NetworkAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAssembly.swift; sourceTree = "<group>"; };
 		1131B58C254088C000BD3FE0 /* ServiceAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAssembly.swift; sourceTree = "<group>"; };
+		1152B38425465E4D00D8E8BB /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
+		1152B3862546600C00D8E8BB /* UINavigationController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extensions.swift"; sourceTree = "<group>"; };
+		1152B3882546618B00D8E8BB /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
+		1152B38A2546629100D8E8BB /* Result+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extension.swift"; sourceTree = "<group>"; };
 		11770D5A2542649B00A912F4 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		11770D5B2542649B00A912F4 /* HomeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeViewController.xib; sourceTree = "<group>"; };
 		11770D5E2542656300A912F4 /* HomeViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewPresenter.swift; sourceTree = "<group>"; };
@@ -148,6 +156,10 @@
 			isa = PBXGroup;
 			children = (
 				1131B5662540554900BD3FE0 /* UIView+Extensions.swift */,
+				1152B38425465E4D00D8E8BB /* UIViewController+Extensions.swift */,
+				1152B3862546600C00D8E8BB /* UINavigationController+Extensions.swift */,
+				1152B3882546618B00D8E8BB /* UIColor+Extensions.swift */,
+				1152B38A2546629100D8E8BB /* Result+Extension.swift */,
 				1131B5682540560200BD3FE0 /* NSObject+Extensions.swift */,
 				11E854022541D6390062F681 /* URL+Extensions.swift */,
 				11DD325925424B0400601F89 /* Encodable+Extensions.swift */,
@@ -360,6 +372,7 @@
 				11DD324A2542435200601F89 /* NetworkHandler.swift in Sources */,
 				11DD324C254243D000601F89 /* NetworkError.swift in Sources */,
 				1131B5832540858E00BD3FE0 /* InjectSettings.swift in Sources */,
+				1152B38B2546629100D8E8BB /* Result+Extension.swift in Sources */,
 				11DD32472542244E00601F89 /* Promise.swift in Sources */,
 				1131B5672540554900BD3FE0 /* UIView+Extensions.swift in Sources */,
 				1131B5852540867700BD3FE0 /* ViewControllerAssembly.swift in Sources */,
@@ -369,6 +382,7 @@
 				11770D5F2542656300A912F4 /* HomeViewPresenter.swift in Sources */,
 				1131B5582540542300BD3FE0 /* GenericStack.xcdatamodeld in Sources */,
 				1131B56F25405FB600BD3FE0 /* Edge.swift in Sources */,
+				1152B3892546618B00D8E8BB /* UIColor+Extensions.swift in Sources */,
 				1131B5692540560200BD3FE0 /* NSObject+Extensions.swift in Sources */,
 				1113A81B2542CC7C00CF79AB /* AlertBuilder.swift in Sources */,
 				11DD325625424A6100601F89 /* AuthRepository.swift in Sources */,
@@ -376,12 +390,14 @@
 				1131B54E2540542300BD3FE0 /* AppDelegate.swift in Sources */,
 				11E854032541D6390062F681 /* URL+Extensions.swift in Sources */,
 				11DD32522542497600601F89 /* NetworkConstants.swift in Sources */,
+				1152B3872546600C00D8E8BB /* UINavigationController+Extensions.swift in Sources */,
 				11770D5C2542649B00A912F4 /* HomeViewController.swift in Sources */,
 				1131B5782540727400BD3FE0 /* DependencyLoader.swift in Sources */,
 				11DD325A25424B0400601F89 /* Encodable+Extensions.swift in Sources */,
 				11E854012541D5380062F681 /* URLRequestConvertible.swift in Sources */,
 				1131B5652540544C00BD3FE0 /* BaseViewProtocol.swift in Sources */,
 				1131B58D254088C000BD3FE0 /* ServiceAssembly.swift in Sources */,
+				1152B38525465E4D00D8E8BB /* UIViewController+Extensions.swift in Sources */,
 				1131B57F2540742000BD3FE0 /* UserDefaultsBacked.swift in Sources */,
 				11DD32452542244700601F89 /* Future.swift in Sources */,
 				1131B5502540542300BD3FE0 /* SceneDelegate.swift in Sources */,
