@@ -44,7 +44,7 @@ extension UIView {
     
     // MARK: All Edges
     
-    @discardableResult func pin(edges: Edge..., toView view: UIView? = nil) -> [String: NSLayoutConstraint] {
+    @discardableResult func pin(edges: Edge..., to view: UIView? = nil) -> [String: NSLayoutConstraint] {
         
         var constraints = [String: NSLayoutConstraint]()
         let constraintToView: UIView
@@ -100,12 +100,12 @@ extension UIView {
     }
     
     
-    @discardableResult func pinAllEdgesSafely(to view: UIView? = nil, withPadding padding: CGFloat) -> [String: NSLayoutConstraint] {
-        return pin(edges: .safeAreaTop(padding: padding), .safeAreaLeading(padding: padding), .safeAreaTrailing(padding: padding), .safeAreaBottom(padding: padding), toView: view)
+    @discardableResult func pinAllEdgesSafely(to view: UIView? = nil, withPadding padding: CGFloat = 0) -> [String: NSLayoutConstraint] {
+        return pin(edges: .safeAreaTop(padding: padding), .safeAreaLeading(padding: padding), .safeAreaTrailing(padding: padding), .safeAreaBottom(padding: padding), to: view)
     }
     
-    @discardableResult func pinAllEdges(to view: UIView? = nil, withPadding padding: CGFloat) -> [String: NSLayoutConstraint] {
-        return pin(edges: .top(padding: padding), .leading(padding: padding), .trailing(padding: padding), .bottom(padding: padding), toView: view)
+    @discardableResult func pinAllEdges(to view: UIView? = nil, withPadding padding: CGFloat = 0) -> [String: NSLayoutConstraint] {
+        return pin(edges: .top(padding: padding), .leading(padding: padding), .trailing(padding: padding), .bottom(padding: padding), to: view)
     }
     
     // MARK: Top
@@ -161,24 +161,28 @@ extension UIView {
     // MARK: Other Vertical
     
     @discardableResult func pinTopToBottom(of view: UIView, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = topAnchor.constraint(equalTo: view.bottomAnchor, constant: spacing)
         constraint.isActive = true
         return constraint
     }
     
     @discardableResult func pinBottomToTop(of view: UIView, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = bottomAnchor.constraint(equalTo: view.topAnchor, constant: spacing)
         constraint.isActive = true
         return constraint
     }
     
     @discardableResult func constrainTopToCenterY(of view: UIView, withConstant constant: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = topAnchor.constraint(equalTo: view.centerYAnchor, constant: constant)
         constraint.isActive = true
         return constraint
     }
     
     @discardableResult func constrainBottomToCenterY(of view: UIView, withConstant constant: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = bottomAnchor.constraint(equalTo: view.centerYAnchor, constant: constant)
         constraint.isActive = true
         return constraint
@@ -187,38 +191,87 @@ extension UIView {
     // MARK: Other Horizontal
     
     @discardableResult func pinLeadingToTrailing(of view: UIView, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = leadingAnchor.constraint(equalTo: view.trailingAnchor, constant: spacing)
         constraint.isActive = true
         return constraint
     }
     
     @discardableResult func pinTrailingToLeading(of view: UIView, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = trailingAnchor.constraint(equalTo: view.leadingAnchor, constant: spacing)
         constraint.isActive = true
         return constraint
     }
     
     @discardableResult func constrainLeadingToCenterX(of view: UIView, withConstant constant: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: constant)
         constraint.isActive = true
         return constraint
     }
     
     @discardableResult func constrainTrailingToCenterX(of view: UIView, withConstant constant: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = bottomAnchor.constraint(equalTo: view.centerYAnchor, constant: constant)
         constraint.isActive = true
         return constraint
     }
     
+    // MARK: Center
+    
+    @discardableResult func centerX(_ padding: CGFloat = 0, to view: UIView? = nil) -> NSLayoutConstraint {
+        
+        let constraint: NSLayoutConstraint
+        let constraintToView: UIView
+        
+        if let view = view {
+            constraintToView = view
+        } else {
+            guard let superview = superview else { fatalError("Both view and superview are nil") }
+            constraintToView = superview
+        }
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        constraint = centerXAnchor.constraint(equalTo: constraintToView.centerXAnchor, constant: padding)
+        
+        constraint.isActive = true
+        return constraint
+        
+    }
+    
+    @discardableResult func centerY(_ padding: CGFloat = 0, to view: UIView? = nil) -> NSLayoutConstraint {
+        
+        let constraint: NSLayoutConstraint
+        let constraintToView: UIView
+        
+        if let view = view {
+            constraintToView = view
+        } else {
+            guard let superview = superview else { fatalError("Both view and superview are nil") }
+            constraintToView = superview
+        }
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        constraint = centerYAnchor.constraint(equalTo: constraintToView.centerYAnchor, constant: padding)
+        
+        constraint.isActive = true
+        return constraint
+        
+    }
+    
     // MARK: Dimensions
     
     @discardableResult func constrainHeight(equalTo constant: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = heightAnchor.constraint(equalToConstant: constant)
         constraint.isActive = true
         return constraint
     }
     
-    @discardableResult func constraintHeight(equalTo constant: CGFloat = 0, multiplier: CGFloat,toView view: UIView? = nil) -> NSLayoutConstraint {
+    @discardableResult func constrainHeight(equalTo constant: CGFloat, multiplier: CGFloat, to view: UIView? = nil) -> NSLayoutConstraint {
         
         let constraint: NSLayoutConstraint
         let constraintToView: UIView
@@ -230,19 +283,23 @@ extension UIView {
             constraintToView = superview
         }
         
+        translatesAutoresizingMaskIntoConstraints = false
+        
         constraint = heightAnchor.constraint(equalTo: constraintToView.heightAnchor, multiplier: multiplier, constant: constant)
         constraint.isActive = true
+        
         return constraint
         
     }
     
     @discardableResult func constrainWidth(equalTo constant: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
         let constraint = widthAnchor.constraint(equalToConstant: constant)
         constraint.isActive = true
         return constraint
     }
     
-    @discardableResult func constraintWidth(equalTo constant: CGFloat = 0, multiplier: CGFloat,toView view: UIView? = nil) -> NSLayoutConstraint {
+    @discardableResult func constrainWidth(equalTo constant: CGFloat, multiplier: CGFloat, to view: UIView? = nil) -> NSLayoutConstraint {
         
         let constraint: NSLayoutConstraint
         let constraintToView: UIView
@@ -254,17 +311,33 @@ extension UIView {
             constraintToView = superview
         }
         
+        translatesAutoresizingMaskIntoConstraints = false
+        
         constraint = widthAnchor.constraint(equalTo: constraintToView.widthAnchor, multiplier: multiplier, constant: constant)
         constraint.isActive = true
+        
         return constraint
         
+    }
+    
+    @discardableResult func setAspectRatio(to ratio: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let constraint = widthAnchor.constraint(equalTo: heightAnchor, multiplier: ratio)
+        constraint.isActive = true
+        return constraint
+    }
+    
+    //MARK: Utility
+    
+    func constraint(block: (UIView) -> ()) {
+        block(self)
     }
     
 }
 
 private extension UIView {
     func pinEdge(_ edge: Edge, to view: UIView? = nil) -> NSLayoutConstraint {
-        return pin(edges: edge, toView: view)[edge.rawValue]!
+        return pin(edges: edge, to: view)[edge.rawValue]!
     }
 }
 
@@ -278,4 +351,52 @@ extension UIView {
         
     }
     
+}
+
+// MARK:- View Layer
+
+extension UIView {
+    
+    func roundCorners(with cornerRadius: CGFloat) {
+        layer.cornerRadius = cornerRadius
+        layer.masksToBounds = true
+    }
+    
+    func round() {
+        layer.cornerRadius = min(bounds.width, bounds.height) / 2
+        layer.masksToBounds = true
+    }
+    
+    func addBorder(with color: UIColor, width: CGFloat) {
+        layer.borderColor = color.cgColor
+        layer.borderWidth = width
+    }
+    
+}
+
+// MARK:- Animations
+
+extension UIView {
+    func fadeIn(in duration: TimeInterval = 0.2, onCompletion: (() -> Void)? = nil) {
+        alpha = 0
+        isHidden = false
+        UIView.animate(withDuration: duration, animations: {
+            self.alpha = 1
+            
+        },
+        completion: { (value: Bool) in
+            if let complete = onCompletion { complete() }
+        })
+    }
+
+    func fadeOut(in duration: TimeInterval = 0.2, onCompletion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: duration, animations: {
+            self.alpha = 0
+            
+        },
+        completion: { [weak self] (value: Bool) in
+            self?.isHidden = true
+            if let complete = onCompletion { complete() }
+        })
+    }
 }
