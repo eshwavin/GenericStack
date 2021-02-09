@@ -30,11 +30,31 @@ extension UIView {
 extension UIView {
     
     func showActivityIndicator(allowingUserInteraction: Bool) {
-        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            let activityIndicator = UIActivityIndicatorView()
+            activityIndicator.restorationIdentifier = "activityIndicator"
+            self.addSubview(activityIndicator)
+            activityIndicator.centerX()
+            activityIndicator.centerY()
+            activityIndicator.constrainHeight(equalTo: 0, multiplier: 0.2)
+            activityIndicator.setAspectRatio(to: 1)
+            activityIndicator.startAnimating()
+            self.isUserInteractionEnabled = allowingUserInteraction
+        }
     }
     
     func hideActivityIndicator() {
-        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            for subview in self.subviews where subview.restorationIdentifier == "activityIndicator" {
+                guard let activityIndicator = subview as? UIActivityIndicatorView else { return }
+                activityIndicator.stopAnimating()
+                activityIndicator.removeFromSuperview()
+                self.isUserInteractionEnabled = true
+            }
+        }
     }
 }
 

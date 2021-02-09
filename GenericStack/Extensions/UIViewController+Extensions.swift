@@ -8,9 +8,9 @@
 
 import UIKit
 
+// MARK:- Presenting ViewControllers
+
 extension UIViewController {
-    
-    // MARK:- Presenting ViewControllers
     
     func push(_ viewController: UIViewController) {
         navigationController?.pushViewController(viewController, animated: true)
@@ -39,8 +39,11 @@ extension UIViewController {
         present(viewController, animated: true, completion: completion)
     }
     
-    // MARK:- Navigation Bar
-    
+}
+
+// MARK:- Navigation Bar
+
+extension UIViewController {
     func hideNavigationBar(animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
@@ -52,5 +55,13 @@ extension UIViewController {
     func hideBackButtonTitle() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
-    
 }
+
+// MARK:- Visibility
+
+extension UIViewController {
+    var isVisible: Bool {
+        return isViewLoaded && view.window != nil
+    }
+}
+
