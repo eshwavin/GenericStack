@@ -1,20 +1,22 @@
-//
-//  CollectionView.swift
-//  GenericStack
-//
-//  Created by Srivinayak Chaitanya Eshwa on 09/02/21.
-//  Copyright © 2021 Srivinayak Chaitanya Eshwa. All rights reserved.
-//
-
 import UIKit
 
 @objc protocol CollectionViewDelegate: class {
     @objc optional func didSelectItem(_ item: CellConfiguratorProtocol, at indexPath: IndexPath)
+    @objc optional func shouldSelectItem(at indexPath: IndexPath) -> Bool
     @objc optional func didPullToRefresh()
     @objc optional func shouldBeginPrefetching(in section: Int)
+    @objc optional func shouldDeselectItem(at indexPath: IndexPath) -> Bool
+    @objc optional func didDeselectItem(_ item: CellConfiguratorProtocol, at indexPath: IndexPath)
+}
+
+protocol CollectionViewSizeProvider: class {
+    func sizeForItem(_ item: CellConfiguratorProtocol, at indexPath: IndexPath, layout collectionViewLayout: UICollectionViewLayout) -> CGSize
 }
 
 final class CollectionView: UIView {
+    
+    private let removeQueue = DispatchQueue(label: "com.QuizBee.removeQueue")
+    private let itemsQueue = DispatchQueue(label: "com.QuizBee.itemsQueue")
 
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -36,28 +38,48 @@ final class CollectionView: UIView {
         }
     }
     
+    private var relevantItems: [CollectionViewSection] {
+        return isFilteringEnabled ? filteredItems : items
+    }
+    
+    private var filter: ((CellConfiguratorProtocol) -> Bool)?
+    
     private var isFilteringEnabled: Bool = false
     
-    private lazy var refreshControl: UIRefreshControl = UIRefreshControl()
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .white
+        return refreshControl
+    }()
     
-    private var isPrefetchingEnabled: Bool = false
+    private(set) var isPrefetchingEnabled: Bool = false
     private var prefetchingSections: IndexSet = []
     private var prefetchingOffset: Int?
+    
+    private var contentOffsetRatio: CGPoint = .zero
     
     // MARK:- Settable Properties
     
     weak var delegate: CollectionViewDelegate?
+    weak var sizeProvider: CollectionViewSizeProvider?
     
     var supportsPullToRefresh: Bool = false {
         didSet {
             if supportsPullToRefresh {
                 collectionView.refreshControl = refreshControl
-                refreshControl.addTarget(delegate, action: #selector(delegate?.didPullToRefresh), for: .valueChanged)
+                refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
             }
             else {
                 collectionView.refreshControl = nil
-                refreshControl.removeTarget(delegate, action: #selector(delegate?.didPullToRefresh), for: .valueChanged)
+                refreshControl.removeTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
             }
+        }
+    }
+    
+    @objc private func didPullToRefresh() {
+        delegate?.didPullToRefresh?()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) { [weak self] in
+            self?.endRefreshing()
         }
     }
     
@@ -67,15 +89,63 @@ final class CollectionView: UIView {
         }
     }
     
+    var allowsMultipleSelection: Bool = false {
+        didSet {
+            collectionView.allowsMultipleSelection = allowsMultipleSelection
+        }
+    }
+    
     var isScrollEnabled: Bool = true {
         didSet {
             collectionView.isScrollEnabled = isScrollEnabled
         }
     }
     
-    var contentInset: UIEdgeInsets = .zero {
+    var contentInset: UIEdgeInsets {
+        set {
+            collectionView.contentInset = newValue
+        }
+        get {
+            return collectionView.contentInset
+        }
+    }
+    
+    var contentOffset: CGPoint {
+        set {
+            collectionView.contentOffset = newValue
+        }
+        get {
+            return collectionView.contentOffset
+        }
+    }
+    
+    var collectionViewClipsToBounds: Bool = true {
         didSet {
-            collectionView.contentInset = contentInset
+            collectionView.clipsToBounds = clipsToBounds
+        }
+    }
+    
+    var alwaysBounceHorizontal: Bool = false {
+        didSet {
+            collectionView.alwaysBounceHorizontal = alwaysBounceHorizontal
+        }
+    }
+    
+    var alwaysBounceVertical: Bool = false {
+        didSet {
+            collectionView.alwaysBounceVertical = alwaysBounceVertical
+        }
+    }
+    
+    var remembersLastFocusedIndexPath: Bool = false {
+        didSet {
+            collectionView.remembersLastFocusedIndexPath = remembersLastFocusedIndexPath
+        }
+    }
+    
+    var keyboardDismissMode: UIScrollView.KeyboardDismissMode = .none {
+        didSet {
+            collectionView.keyboardDismissMode = keyboardDismissMode
         }
     }
     
@@ -98,13 +168,23 @@ final class CollectionView: UIView {
         collectionView.layoutIfNeeded()
     }
     
-    // MARK: Helpers
+    // MARK:- Helpers
     
-    private func item(at indexPath: IndexPath) -> CellConfiguratorProtocol {
-        return isFilteringEnabled ? filteredItems[indexPath.section].cellConfigurators[indexPath.row] : items[indexPath.section].cellConfigurators[indexPath.row]
+    private func relevantItem(at indexPath: IndexPath) -> CellConfiguratorProtocol {
+        return relevantItems[indexPath.section].cellConfigurators[indexPath.row]
     }
     
-    // MARK: Exposed API
+    func item(at indexPath: IndexPath) -> CellConfiguratorProtocol {
+        return items[indexPath.section].cellConfigurators[indexPath.row]
+    }
+    
+    func getSection(_ section: Int) -> CollectionViewSection {
+        return items[section]
+    }
+    
+    // MARK:- Exposed API
+    
+    // MARK:- Changing DataSource and Delegate
     
     func setDataSource(to dataSource: UICollectionViewDataSource) {
         collectionView.dataSource = self
@@ -116,10 +196,22 @@ final class CollectionView: UIView {
         collectionView.reloadData()
     }
     
+    // MARK:- Layout
+    
     func setLayout(to layout: UICollectionViewLayout, animated: Bool) {
         collectionView.setCollectionViewLayout(layout, animated: animated)
         collectionView.collectionViewLayout.invalidateLayout()
     }
+    
+    func invalidateLayout() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.collectionView.collectionViewLayout.invalidateLayout()
+            self?.collectionView.layoutIfNeeded()
+        }
+        
+    }
+    
+    // MARK:- Registering Views
     
     func register<T: UICollectionViewCell>(cellTypes: T.Type...) {
         cellTypes.forEach { (cellType) in
@@ -127,18 +219,49 @@ final class CollectionView: UIView {
         }
     }
     
+    func register<T: UICollectionViewCell>(cellType: T.Type, with nib: UINib) {
+        collectionView.register(nib, forCellWithReuseIdentifier: cellType.className)
+    }
+    
+    func register<T: UICollectionViewCell>(cellClasses: T.Type...) {
+        cellClasses.forEach { (cellClass) in
+            collectionView.register(cellClass, forCellWithReuseIdentifier: cellClass.className)
+        }
+        
+    }
+    
     func register<T: UICollectionReusableView>(reusableView: T.Type, for kind: String) {
         collectionView.register(reusableView.nib, forSupplementaryViewOfKind: kind, withReuseIdentifier: reusableView.className)
     }
+    
+    // MARK:- Data Info
+    
+    func numberOfItems(in section: Int) -> Int {
+        return collectionView.numberOfItems(inSection: section)
+    }
+    
+    func numberOfSections() -> Int {
+        return collectionView.numberOfSections
+    }
+    
+    // MARK:- Scrolling and selection
 
     func scrollToItem(at indexPath: IndexPath, at scrollPosition: UICollectionView.ScrollPosition, animated: Bool = false) {
         collectionView.scrollToItem(at: indexPath, at: scrollPosition, animated: animated)
     }
     
-    func selectItem(at indexPath: IndexPath, animated: Bool, scrollPosition: UICollectionView.ScrollPosition? = nil) {
+    func scrollToLastItem(animated: Bool) {
+        let lastSection = items.count - 1
+        let lastItem = items[lastSection].cellConfigurators.count - 1
+        let lastIndexPath = IndexPath(item: lastItem, section: lastSection)
+        collectionView.scrollToItem(at: lastIndexPath, at: .bottom, animated: animated)
+    }
+    
+    @discardableResult func selectItem(at indexPath: IndexPath, animated: Bool, scrollPosition: UICollectionView.ScrollPosition? = nil) -> CellConfiguratorProtocol? {
         
         if let scrollPosition = scrollPosition {
             collectionView.selectItem(at: indexPath, animated: animated, scrollPosition: scrollPosition)
+            return relevantItem(at: indexPath)
         }
         else if let scrollDirection = (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.scrollDirection,
                 let layoutAttributes = collectionView.layoutAttributesForItem(at: indexPath) {
@@ -169,108 +292,331 @@ final class CollectionView: UIView {
             }
             
             collectionView.selectItem(at: indexPath, animated: true, scrollPosition: scrollPosition)
+            return relevantItem(at: indexPath)
         }
         
-        
+        return nil
+    }
+    
+    func deselectItem(at indexPath: IndexPath, animated: Bool) {
+        collectionView.deselectItem(at: indexPath, animated: animated)
+    }
+    
+    // MARK:- Data Loading
+    
+    func reloadData() {
+        runOnMainThread { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadData()
+        }
     }
     
     func refresh(with items: [CollectionViewSection]) {
-        self.items = items
-        DispatchQueue.main.async { [weak self] in
-            self?.collectionView.reloadData()
+        itemsQueue.sync {
+            self.items = items
+            if isFilteringEnabled {
+                setFilteredItems()
+            }
+            reloadData()
         }
-        
     }
     
     func addItems(_ items: [CollectionViewSection]) {
         
-        guard items.count == self.items.count else {
-            fatalError("Number of sections changed. Please add support to Generic CollectionView")
-        }
-        
-        let newIndexPaths: [IndexPath] = (0 ..< items.count).compactMap { (section) -> [IndexPath] in
-            
-            let initialItem = self.items[section].cellConfigurators.count
-            self.items[section].cellConfigurators.append(contentsOf: items[section].cellConfigurators)
-        
-            return (initialItem ..< initialItem + items[section].cellConfigurators.count).compactMap { (item) -> IndexPath in
-                return IndexPath(item: item, section: section)
+        itemsQueue.sync {
+            guard items.count == self.items.count else {
+                fatalError("Number of sections changed. Please add support to Generic CollectionView")
             }
-        }.reduce([], +)
+            
+            if isFilteringEnabled {
+                for section in (0 ..< items.count) {
+                    self.items[section].cellConfigurators.append(contentsOf: items[section].cellConfigurators)
+                }
+                setFilteredItems()
+                reloadData()
+            }
+            else {
+                let newIndexPaths: [IndexPath] = (0 ..< items.count).compactMap { (section) -> [IndexPath] in
+                    
+                    let initialItem = self.items[section].cellConfigurators.count
+                    self.items[section].cellConfigurators.append(contentsOf: items[section].cellConfigurators)
+                
+                    return (initialItem ..< initialItem + items[section].cellConfigurators.count).compactMap { (item) -> IndexPath in
+                        return IndexPath(item: item, section: section)
+                    }
+                }.reduce([], +)
+                
+                runOnMainThread { [weak self] in
+                    guard let self = self else { return }
+                    self.collectionView.performBatchUpdates({
+                        self.collectionView.insertItems(at: newIndexPaths)
+                    }, completion: nil)
+                }
+                
+            }
+        }
+    }
+    
+    func addSections(_ sections: [CollectionViewSection]) {
         
-        collectionView.performBatchUpdates({
-            collectionView.insertItems(at: newIndexPaths)
-        }, completion: nil)
-
+        itemsQueue.sync {
+            items.append(contentsOf: sections)
+            
+            if isFilteringEnabled {
+                setFilteredItems()
+                reloadData()
+            }
+            else {
+                let newIndexPaths: [IndexPath] = (items.count ..< items.count + sections.count).compactMap { (section) -> [IndexPath] in
+                    
+                    let rows = sections[section]
+                    return (0 ..< rows.cellConfigurators.count).compactMap { (row) -> IndexPath in
+                        return IndexPath(item: row, section: section)
+                    }
+                    
+                }.reduce([], +)
+                
+                runOnMainThread { [weak self] in
+                    
+                    guard let self = self else { return }
+                    self.collectionView.performBatchUpdates({
+                        self.collectionView.insertItems(at: newIndexPaths)
+                    }, completion: nil)
+                }
+            }
+        }
+                
     }
 
-    func add(items: [CellConfiguratorProtocol], to section: Int) {
+    func add(items: [CellConfiguratorProtocol], to section: Int, at index: Int? = nil, completion: ((Bool) -> Void)? = nil) {
         
-        guard section < self.items.count else {
-            fatalError("Section index out of bounds")
+        itemsQueue.sync {
+            guard section < self.items.count else {
+                fatalError("Section index out of bounds")
+            }
+            
+            if let index = index {
+                if index < 0 || index > self.items[section].cellConfigurators.count {
+                    fatalError("Index out of bounds")
+                }
+            }
+            
+            let initialItemsCount: Int
+            
+            if let index = index {
+                initialItemsCount = index
+                self.items[section].cellConfigurators.insert(contentsOf: items, at: index)
+            }
+            else {
+                initialItemsCount = self.items[section].cellConfigurators.count
+                self.items[section].cellConfigurators.append(contentsOf: items)
+            }
+            
+            let newIndexPaths: [IndexPath] = (initialItemsCount ..< initialItemsCount + items.count).map {
+                IndexPath(item: $0, section: section)
+            }
+            
+            if isFilteringEnabled {
+                setFilteredItems()
+                reloadData()
+            }
+            
+            else {
+                
+                runOnMainThread { [weak self] in
+                    guard let self = self else { return }
+                    self.collectionView.performBatchUpdates({
+                        self.collectionView.insertItems(at: newIndexPaths)
+                    }, completion: nil)
+                }
+            }
         }
-        
-        let initialItemsCount = self.items[section].cellConfigurators.count
-        
-        let newIndexPaths: [IndexPath] = (initialItemsCount ..< initialItemsCount + items.count).map {
-            IndexPath(item: $0, section: section)
-        }
-        
-        self.items[section].cellConfigurators.append(contentsOf: items)
-        
-        collectionView.performBatchUpdates({
-            collectionView.insertItems(at: newIndexPaths)
-        }, completion: nil)
         
     }
     
-    func refreshSection(_ section: Int, with items: [CellConfiguratorProtocol]) {
-        guard section < self.items.count else {
-            fatalError("Section index out of bounds")
+    func reloadVisibleItems() {
+        runOnMainThread { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems)
         }
         
-        self.items[section].cellConfigurators = items
-        endRefreshing()
-        collectionView.reloadSections(IndexSet([section]))
+    }
+    
+    func reloadSections(_ sections: IndexSet) {
+        runOnMainThread { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadSections(sections)
+        }
+    }
+    
+    func reloadItems(at indexPaths: [IndexPath]) {
+        runOnMainThread { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadItems(at: indexPaths)
+        }
+    }
+    
+    func refreshSection(_ section: Int, with items: [CellConfiguratorProtocol], shouldReload: Bool = false) {
+        
+        itemsQueue.sync {
+            guard section < self.items.count else {
+                fatalError("Section index out of bounds")
+            }
+            
+            self.items[section].cellConfigurators = items
+            
+            if isFilteringEnabled {
+                setFilteredItems()
+                reloadData()
+            }
+            
+            endRefreshing()
+            if shouldReload {
+                reloadData()
+            }
+            else {
+                runOnMainThread { [weak self] in
+                    guard let self = self else { return }
+                    self.collectionView.reloadSections(IndexSet([section]))
+                }
+                
+            }
+        }
         
     }
     
     func updateItems(with updateHandler: ([CollectionViewSection]) -> ([IndexPath])) {
-        let indexPathsToUpdate = updateHandler(items)
-        if !indexPathsToUpdate.isEmpty {
-            UIView.performWithoutAnimation {
-                collectionView.reloadItems(at: indexPathsToUpdate)
+        
+        itemsQueue.sync {
+            let indexPathsToUpdate = updateHandler(items)
+            if !indexPathsToUpdate.isEmpty {
+                
+                indexPathsToUpdate.forEach { (indexPath) in
+                    let item = self.item(at: indexPath)
+                    
+                    runOnMainThread { [weak self] in
+                        guard let self = self else { return }
+                        if let cell = self.collectionView.cellForItem(at: indexPath) {
+                            item.configure(cell: cell, at: indexPath)
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    func removeItem(at indexPath: IndexPath) {
+        itemsQueue.sync {
+            guard !isFilteringEnabled else { return }
+            
+            items[indexPath.section].cellConfigurators.remove(at: indexPath.item)
+            
+            runOnMainThread { [weak self] in
+                guard let self = self else { return }
+                self.collectionView.deleteItems(at: [indexPath])
+                self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems)
             }
         }
     }
     
-    func endRefreshing() {
-        refreshControl.endRefreshing()
+    func removeItem(matching predicate: @escaping (CellConfiguratorProtocol) -> Bool, in section: Int, completion: (() -> ())? = nil) {
+        
+        guard !isFilteringEnabled else { return }
+        
+        removeQueue.async {
+            let semaphore = DispatchSemaphore(value: 0)
+            
+            runOnMainThread { [weak self] in
+                
+                guard let self = self else {
+                    semaphore.signal()
+                    return
+                }
+                
+                if let index = self.items[section].cellConfigurators.firstIndex(where: predicate) {
+                    
+                    self.items[section].cellConfigurators.remove(at: index)
+                    
+                    let indexPath = IndexPath(item: index, section: section)
+                    
+                    self.collectionView.deleteItems(at: [indexPath])
+                    self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems.filter { $0.section == indexPath.section })
+                }
+                
+                completion?()
+                semaphore.signal()
+                
+            }
+            semaphore.wait()
+        }
+        
     }
     
-    func startFiltering(with filter: ((CellConfiguratorProtocol) -> Bool)) {
+    func setEmptyMessage(_ message: String, font: UIFont?) {
+        let messageLabel = UILabel()
+        messageLabel.text = message
+        messageLabel.textAlignment = .center
+        messageLabel.textColor = .white
+        messageLabel.numberOfLines = 0
+        messageLabel.font = font
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
+        view.addSubview(messageLabel)
+        collectionView.backgroundView = view
+        messageLabel.centerX()
+        messageLabel.centerY()
+        messageLabel.pin(edges: .leading(padding: 15), .trailing(padding: -15))
+    }
+    
+    func removeEmptyMessage() {
+        collectionView.backgroundView = nil
+    }
+    
+    // MARK:- Filtering
+    
+    func startFiltering(with filter: @escaping ((CellConfiguratorProtocol) -> Bool)) {
         isFilteringEnabled = true
+        self.filter = filter
+        setFilteredItems()
+        collectionView.reloadData()
+    }
+    
+    private func setFilteredItems() {
+        guard isFilteringEnabled else { return }
+        guard let filter = self.filter else {
+            isFilteringEnabled = false
+            return
+        }
+        
         filteredItems = items.map {
             let filteredConfigurators = $0.cellConfigurators.filter { (item) -> Bool in
                 return filter(item)
             }
             return CollectionViewSection(header: $0.header, cellConfigurators: filteredConfigurators, footer: $0.footer)
         }
-        collectionView.reloadData()
+        
+        guard isPrefetchingEnabled else { return }
+        
+        for (index, filteredItem) in filteredItems.enumerated() {
+            if prefetchingSections.contains(index) && filteredItem.cellConfigurators.count == 0 {
+                print("PF: Begin \(index)")
+                delegate?.shouldBeginPrefetching?(in: index)
+            }
+        }
+        
     }
     
     func stopFiltering() {
         isFilteringEnabled = false
+        self.filter = nil
         filteredItems = []
         collectionView.reloadData()
     }
     
-    func perform(_ block: (UICollectionView) -> ()) {
-        block(collectionView)
-    }
+    // MARK:- Prefetching
     
     func enablePrefetching(inSections sections: IndexSet, withOffset prefetchingOffset: Int) {
-        let itemsCount = items.count
+        let itemsCount = relevantItems.count
         for section in sections {
             if itemsCount < section {
                 fatalError("Section \(section) out of bounds of items with count: \(itemsCount)")
@@ -282,6 +628,29 @@ final class CollectionView: UIView {
         self.prefetchingOffset = prefetchingOffset
     }
     
+    // MARK:- Sorting
+    
+    func sortItems(in section: Int, by sortingLogic: (CellConfiguratorProtocol, CellConfiguratorProtocol) throws -> Bool) {
+        try? items[section].cellConfigurators.sort(by: sortingLogic)
+        collectionView.reloadSections(IndexSet([section]))
+    }
+    
+    func sortItems(by sortingLogic: (CellConfiguratorProtocol, CellConfiguratorProtocol) throws -> Bool) {
+        for section in 0 ..< items.count {
+            sortItems(in: section, by: sortingLogic)
+        }
+    }
+    
+    // MARK: Misc
+    
+    func endRefreshing() {
+        refreshControl.endRefreshing()
+    }
+    
+    func perform(_ block: (UICollectionView) -> ()) {
+        block(collectionView)
+    }
+    
 }
 
 // MARK:- UICollectionViewDataSource
@@ -289,17 +658,16 @@ final class CollectionView: UIView {
 extension CollectionView: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        items.count
+        relevantItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items[section].cellConfigurators.count
+        return relevantItems[section].cellConfigurators.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let item = self.item(at: indexPath)
-        
+        let item = self.relevantItem(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseID, for: indexPath)
         item.configure(cell: cell, at: indexPath)
         
@@ -308,11 +676,23 @@ extension CollectionView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let header = items[indexPath.section].header else { return UICollectionReusableView() }
+        if kind == UICollectionView.elementKindSectionHeader {
+            guard let header = relevantItems[indexPath.section].header else { return UICollectionReusableView() }
+            
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: header.reuseID, for: indexPath)
+            header.configure(headerFooterView: headerView)
+            return headerView
+        }
+        else if kind == UICollectionView.elementKindSectionFooter {
+            guard let footer = relevantItems[indexPath.section].footer else { return UICollectionReusableView() }
+            
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footer.reuseID, for: indexPath)
+            footer.configure(headerFooterView: footerView)
+            return footerView
+        }
         
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: GlobalConstants.CollectionViewConstants.headerElementKind, withReuseIdentifier: header.reuseID, for: indexPath)
-        header.configure(headerFooterView: headerView)
-        return headerView
+        return UICollectionReusableView()
+        
     }
 }
 
@@ -320,18 +700,38 @@ extension CollectionView: UICollectionViewDataSource {
 
 extension CollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didSelectItem?(item(at: indexPath), at: indexPath)
+        delegate?.didSelectItem?(relevantItem(at: indexPath), at: indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return delegate?.shouldSelectItem?(at: indexPath) ?? true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return delegate?.shouldDeselectItem?(at: indexPath) ?? true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        delegate?.didDeselectItem?(relevantItem(at: indexPath), at: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard isPrefetchingEnabled, !prefetchingSections.isEmpty, let prefetchingOffset = prefetchingOffset else { return }
         
         if prefetchingSections.contains(indexPath.section) {
-            if indexPath.row + prefetchingOffset >= items[indexPath.section].cellConfigurators.count {
+            if indexPath.row + prefetchingOffset >= relevantItems[indexPath.section].cellConfigurators.count {
                 delegate?.shouldBeginPrefetching?(in: indexPath.section)
             }
         }
-        
     }
 }
 
+extension CollectionView: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let item = self.relevantItem(at: indexPath)
+        
+        return sizeProvider?.sizeForItem(item, at: indexPath, layout: collectionViewLayout) ?? (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize ?? .zero
+    }
+    
+}

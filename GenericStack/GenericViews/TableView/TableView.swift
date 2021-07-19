@@ -17,12 +17,15 @@ import UIKit
 final class TableView: UIView {
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero)
+        let tableView = UITableView(frame: .zero, style: self.tableViewStyle)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
         tableView.separatorStyle = separatorStyle
+        tableView.backgroundColor = .clear
         return tableView
     }()
+    
+    private let tableViewStyle: UITableView.Style
     
     private var items: [TableViewSection] = [] {
         didSet {
@@ -91,15 +94,19 @@ final class TableView: UIView {
         }
     }
     
-    var contentInset: UIEdgeInsets = .zero {
-        didSet {
-            tableView.contentInset = contentInset
+    var contentInset: UIEdgeInsets {
+        set {
+            tableView.contentInset = newValue
+        }
+        get {
+            return tableView.contentInset
         }
     }
     
     // MARK: Lifecycle
-    init(tableViewDataSource: UITableViewDataSource? = nil, tableViewDelegate: UITableViewDelegate? = nil, autoDeselectsOnSelection: Bool = true) {
+    init(tableViewDataSource: UITableViewDataSource? = nil, tableViewDelegate: UITableViewDelegate? = nil, autoDeselectsOnSelection: Bool = true, tableViewStyle: UITableView.Style = .plain) {
         self.autoDeselectsOnSelection = autoDeselectsOnSelection
+        self.tableViewStyle = tableViewStyle
         super.init(frame: .zero)
         layoutUI()
         tableView.dataSource = tableViewDataSource == nil ? self : tableViewDataSource
@@ -108,6 +115,7 @@ final class TableView: UIView {
     
     required init?(coder: NSCoder) {
         self.autoDeselectsOnSelection = true
+        self.tableViewStyle = .plain
         super.init(coder: coder)
         layoutUI()
         tableView.delegate = self
@@ -161,6 +169,14 @@ final class TableView: UIView {
         }, completion: nil)
     }
     
+    func addSections(_ sections: [TableViewSection], at index: Int) {
+        items.insert(contentsOf: sections, at: index)
+        let indexSet = IndexSet(index ..< index + sections.count)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.insertSections(indexSet, with: .fade)
+        }
+    }
+    
     func add(items: [CellConfiguratorProtocol], to section: Int) {
         guard section < self.items.count else {
             fatalError("Section index out of bounds")
@@ -189,10 +205,49 @@ final class TableView: UIView {
         tableView.reloadSections(IndexSet([section]), with: .fade)
     }
     
+    func changeConfigurator(atIndexPath indexPath: IndexPath, with configurator: CellConfiguratorProtocol) {
+        guard indexPath.section < items.count else {
+            fatalError("Section index out of bounds")
+        }
+        guard indexPath.row < items[indexPath.section].cellConfigurators.count else {
+            fatalError("Row index out of bounds")
+        }
+        
+        items[indexPath.section].cellConfigurators[indexPath.row] = configurator
+        tableView.reloadRows(at: [indexPath], with: .none)
+    }
+    
     func updateItems(with updateHandler: ([TableViewSection]) -> ([IndexPath])) {
         let indexPathsToUpdate = updateHandler(items)
         if !indexPathsToUpdate.isEmpty {
             tableView.reloadRows(at: indexPathsToUpdate, with: .none)
+        }
+    }
+    
+    func removeItems(at rows: IndexSet, in section: Int) {
+        items[section].cellConfigurators.remove(at: rows)
+        let indexPaths: [IndexPath] = rows.map {
+            IndexPath(row: $0, section: section)
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.deleteRows(at: indexPaths, with: .fade)
+        }
+    }
+    
+    func removeSections(_ sections: IndexSet) {
+        items.remove(at: sections)
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.deleteSections(sections, with: .fade)
+        }
+    }
+    
+    func reloadData() {
+        tableView.reloadData()
+    }
+    
+    func reloadRows(at indexPaths: [IndexPath]) {
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadRows(at: indexPaths, with: .fade)
         }
     }
     
@@ -278,4 +333,3 @@ extension TableView: UITableViewDelegate {
         return shouldSelectRow ? indexPath : nil
     }
 }
-

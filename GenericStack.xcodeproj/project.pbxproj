@@ -25,6 +25,12 @@
 		110C7D1826A62245002778B4 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1726A62245002778B4 /* UIScrollView+Extensions.swift */; };
 		110C7D1B26A62294002778B4 /* UITextView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1A26A62294002778B4 /* UITextView+Extensions.swift */; };
 		110C7D1E26A623BF002778B4 /* UIWindow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1D26A623BF002778B4 /* UIWindow+Extensions.swift */; };
+		110C7D2226A62505002778B4 /* PickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D2126A62504002778B4 /* PickerRepresentable.swift */; };
+		110C7D2626A62527002778B4 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D2526A62527002778B4 /* PickerView.swift */; };
+		110C7D2926A626A3002778B4 /* NSMutableAttributedStringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D2826A626A3002778B4 /* NSMutableAttributedStringBuilder.swift */; };
+		110C7D2C26A626CC002778B4 /* CustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D2B26A626CB002778B4 /* CustomFont.swift */; };
+		110C7D3226A627A7002778B4 /* ConfettiLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D3126A627A7002778B4 /* ConfettiLayer.swift */; };
+		110C7D3626A627CF002778B4 /* ConfettiType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D3526A627CF002778B4 /* ConfettiType.swift */; };
 		1113A81B2542CC7C00CF79AB /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1113A81A2542CC7C00CF79AB /* AlertBuilder.swift */; };
 		1131B54E2540542300BD3FE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B54D2540542300BD3FE0 /* AppDelegate.swift */; };
 		1131B5502540542300BD3FE0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B54F2540542300BD3FE0 /* SceneDelegate.swift */; };
@@ -112,6 +118,12 @@
 		110C7D1726A62245002778B4 /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D1A26A62294002778B4 /* UITextView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D1D26A623BF002778B4 /* UIWindow+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extensions.swift"; sourceTree = "<group>"; };
+		110C7D2126A62504002778B4 /* PickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerRepresentable.swift; sourceTree = "<group>"; };
+		110C7D2526A62527002778B4 /* PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
+		110C7D2826A626A3002778B4 /* NSMutableAttributedStringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringBuilder.swift; sourceTree = "<group>"; };
+		110C7D2B26A626CB002778B4 /* CustomFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFont.swift; sourceTree = "<group>"; };
+		110C7D3126A627A7002778B4 /* ConfettiLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiLayer.swift; sourceTree = "<group>"; };
+		110C7D3526A627CF002778B4 /* ConfettiType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiType.swift; sourceTree = "<group>"; };
 		1113A81A2542CC7C00CF79AB /* AlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBuilder.swift; sourceTree = "<group>"; };
 		1131B54A2540542300BD3FE0 /* GenericStack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GenericStack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1131B54D2540542300BD3FE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -193,10 +205,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		110C7D2026A624F6002778B4 /* PickerView */ = {
+			isa = PBXGroup;
+			children = (
+				110C7D2126A62504002778B4 /* PickerRepresentable.swift */,
+				110C7D2526A62527002778B4 /* PickerView.swift */,
+			);
+			path = PickerView;
+			sourceTree = "<group>";
+		};
+		110C7D2F26A6276A002778B4 /* ReusableLayers */ = {
+			isa = PBXGroup;
+			children = (
+				110C7D3026A6278B002778B4 /* Confetti */,
+			);
+			path = ReusableLayers;
+			sourceTree = "<group>";
+		};
+		110C7D3026A6278B002778B4 /* Confetti */ = {
+			isa = PBXGroup;
+			children = (
+				110C7D3126A627A7002778B4 /* ConfettiLayer.swift */,
+				110C7D3526A627CF002778B4 /* ConfettiType.swift */,
+			);
+			path = Confetti;
+			sourceTree = "<group>";
+		};
 		1113A81C2542CC8300CF79AB /* Builders */ = {
 			isa = PBXGroup;
 			children = (
 				1113A81A2542CC7C00CF79AB /* AlertBuilder.swift */,
+				110C7D2826A626A3002778B4 /* NSMutableAttributedStringBuilder.swift */,
 			);
 			path = Builders;
 			sourceTree = "<group>";
@@ -233,6 +272,7 @@
 				1131B5752540724D00BD3FE0 /* Enums */,
 				11DD32502542496500601F89 /* Constants */,
 				11F6D30E25D2FC21008D1B4E /* Utilities */,
+				110C7D2F26A6276A002778B4 /* ReusableLayers */,
 				1131B5592540542D00BD3FE0 /* Assets.xcassets */,
 				1131B55B2540542D00BD3FE0 /* LaunchScreen.storyboard */,
 				1131B55E2540542D00BD3FE0 /* Info.plist */,
@@ -414,6 +454,7 @@
 				11F6D31325D2FC9E008D1B4E /* Protocols */,
 				1113A81C2542CC8300CF79AB /* Builders */,
 				11F6D30F25D2FC3E008D1B4E /* Atomic.swift */,
+				110C7D2B26A626CB002778B4 /* CustomFont.swift */,
 				110C7D0226A62036002778B4 /* RunOnMainThread.swift */,
 			);
 			path = Utilities;
@@ -431,6 +472,7 @@
 		11F6D34525D30303008D1B4E /* GenericViews */ = {
 			isa = PBXGroup;
 			children = (
+				110C7D2026A624F6002778B4 /* PickerView */,
 				11F6D35725D304A9008D1B4E /* TableView */,
 				11F6D34725D3032A008D1B4E /* GenericItem */,
 				11F6D34625D3031B008D1B4E /* CollectionView */,
@@ -553,6 +595,7 @@
 				11DD324A2542435200601F89 /* NetworkHandler.swift in Sources */,
 				110C7D0326A62037002778B4 /* RunOnMainThread.swift in Sources */,
 				110C7D1226A621B8002778B4 /* UILabel+Extensions.swift in Sources */,
+				110C7D2C26A626CC002778B4 /* CustomFont.swift in Sources */,
 				11DD324C254243D000601F89 /* NetworkError.swift in Sources */,
 				1131B5832540858E00BD3FE0 /* InjectSettings.swift in Sources */,
 				1152B38B2546629100D8E8BB /* Result+Extension.swift in Sources */,
@@ -576,6 +619,7 @@
 				110C7D1E26A623BF002778B4 /* UIWindow+Extensions.swift in Sources */,
 				1131B5582540542300BD3FE0 /* GenericStack.xcdatamodeld in Sources */,
 				1131B56F25405FB600BD3FE0 /* Edge.swift in Sources */,
+				110C7D2226A62505002778B4 /* PickerRepresentable.swift in Sources */,
 				11F6D35225D3045D008D1B4E /* CollectionViewHeaderFooterProtocol.swift in Sources */,
 				1152B3892546618B00D8E8BB /* UIColor+Extensions.swift in Sources */,
 				1131B5692540560200BD3FE0 /* NSObject+Extensions.swift in Sources */,
@@ -591,6 +635,7 @@
 				11F6D31525D2FCAD008D1B4E /* ContentViewProtocol.swift in Sources */,
 				11E854032541D6390062F681 /* URL+Extensions.swift in Sources */,
 				11F6D34F25D3040D008D1B4E /* CollectionView.swift in Sources */,
+				110C7D3226A627A7002778B4 /* ConfettiLayer.swift in Sources */,
 				11F6D36025D30524008D1B4E /* TableViewSection.swift in Sources */,
 				11DD32522542497600601F89 /* NetworkConstants.swift in Sources */,
 				11F6D32225D2FE9E008D1B4E /* Dictionary+Extensions.swift in Sources */,
@@ -604,6 +649,7 @@
 				1131B5782540727400BD3FE0 /* DependencyLoader.swift in Sources */,
 				110C7CED26A61C00002778B4 /* Bool+Extensions.swift in Sources */,
 				11DD325A25424B0400601F89 /* Encodable+Extensions.swift in Sources */,
+				110C7D3626A627CF002778B4 /* ConfettiType.swift in Sources */,
 				11F6D31825D2FCC9008D1B4E /* CountdownProtocol.swift in Sources */,
 				11F6D34C25D303CB008D1B4E /* ConfigurableView.swift in Sources */,
 				11F6D31025D2FC3E008D1B4E /* Atomic.swift in Sources */,
@@ -619,6 +665,8 @@
 				110C7D0926A62123002778B4 /* UIControl+Extensions.swift in Sources */,
 				11F6D34925D3039F008D1B4E /* CellConfigurator.swift in Sources */,
 				11DD32452542244700601F89 /* Future.swift in Sources */,
+				110C7D2926A626A3002778B4 /* NSMutableAttributedStringBuilder.swift in Sources */,
+				110C7D2626A62527002778B4 /* PickerView.swift in Sources */,
 				11F6D33425D300CE008D1B4E /* UICollectionViewCell+Extensions.swift in Sources */,
 				11F6D33D25D30192008D1B4E /* UIStackView+Extensions.swift in Sources */,
 				110C7D0626A6207A002778B4 /* NotificationCenter+Extensions.swift in Sources */,
