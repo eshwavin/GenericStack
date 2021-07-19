@@ -23,5 +23,16 @@ extension Date {
         let delta = TimeInterval(finalTimeZone.secondsFromGMT(for: self) - initialTimeZone.secondsFromGMT(for: self))
         return addingTimeInterval(delta)
     }
+    
+    func isWithinDays(_ days: Int) -> Bool {
+            let numberOfDays = Calendar.current.dateComponents([.day], from: self, to: Date()).day ?? 0
+            print("ND:", numberOfDays)
+            return numberOfDays <= days
+        }
+        
+        static func -(lhs: Date, rhs: Date) -> TimeInterval {
+            return lhs.timeIntervalSince(rhs)
+        }
+
 }
 

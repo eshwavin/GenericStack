@@ -12,5 +12,10 @@ extension Int {
     var degreesToRadians: CGFloat {
         return CGFloat(self) * .pi / 180
     }
+    
+    var boolValue: Bool {
+        return self == 0 ? false : true
+    }
+
 }
 

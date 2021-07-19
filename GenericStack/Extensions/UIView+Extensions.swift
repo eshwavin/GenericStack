@@ -102,6 +102,9 @@ extension UIView {
             case .trailing(let padding):
                 constraint = trailingAnchor.constraint(equalTo: constraintToView.trailingAnchor, constant: padding)
                 
+            case .lessThanTrailing(let padding):
+                constraint = trailingAnchor.constraint(lessThanOrEqualTo: constraintToView.trailingAnchor, constant: padding)
+                
             case .safeAreaBottom(let padding):
                 constraint = bottomAnchor.constraint(equalTo: constraintToView.safeAreaLayoutGuide.bottomAnchor, constant: padding)
             
@@ -121,7 +124,7 @@ extension UIView {
     
     
     @discardableResult func pinAllEdgesSafely(to view: UIView? = nil, withPadding padding: CGFloat = 0) -> [String: NSLayoutConstraint] {
-        return pin(edges: .safeAreaTop(padding: padding), .safeAreaLeading(padding: padding), .safeAreaTrailing(padding: padding), .safeAreaBottom(padding: padding), to: view)
+        return pin(edges: .safeAreaTop(padding: padding), .safeAreaLeading(padding: padding), .safeAreaTrailing(padding: -padding), .safeAreaBottom(padding: -padding), to: view)
     }
     
     @discardableResult func pinAllEdges(to view: UIView? = nil, withPadding padding: CGFloat = 0) -> [String: NSLayoutConstraint] {
@@ -187,6 +190,13 @@ extension UIView {
         return constraint
     }
     
+    @discardableResult func pinTopToCenter(of view: UIView, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+        let constraint = topAnchor.constraint(equalTo: view.centerYAnchor, constant: spacing)
+        constraint.isActive = true
+        return constraint
+    }
+ 
     @discardableResult func pinBottomToTop(of view: UIView, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         translatesAutoresizingMaskIntoConstraints = false
         let constraint = bottomAnchor.constraint(equalTo: view.topAnchor, constant: spacing)
@@ -261,7 +271,7 @@ extension UIView {
         
     }
     
-    @discardableResult func centerY(_ padding: CGFloat = 0, to view: UIView? = nil) -> NSLayoutConstraint {
+    @discardableResult func centerY(to view: UIView? = nil, withConstant constant: CGFloat = 0) -> NSLayoutConstraint {
         
         let constraint: NSLayoutConstraint
         let constraintToView: UIView
@@ -275,7 +285,7 @@ extension UIView {
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        constraint = centerYAnchor.constraint(equalTo: constraintToView.centerYAnchor, constant: padding)
+        constraint = centerYAnchor.constraint(equalTo: constraintToView.centerYAnchor, constant: constant)
         
         constraint.isActive = true
         return constraint
@@ -382,6 +392,13 @@ extension UIView {
         layer.masksToBounds = true
     }
     
+    func roundSomeCorners(_ corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        self.layer.mask = mask
+    }
+    
     func round() {
         layer.cornerRadius = min(bounds.width, bounds.height) / 2
         layer.masksToBounds = true
@@ -392,6 +409,24 @@ extension UIView {
         layer.borderWidth = width
     }
     
+    func removeBorder() {
+        layer.borderColor = nil
+        layer.borderWidth = 0
+    }
+    
+    @discardableResult func addDashedBorder(withPattern pattern: [NSNumber], color: UIColor, radius: CGFloat, width: CGFloat) -> CAShapeLayer {
+        let borderLayer = CAShapeLayer()
+        
+        borderLayer.strokeColor = color.cgColor
+        borderLayer.lineDashPattern = pattern
+        borderLayer.frame = bounds
+        borderLayer.fillColor = nil
+        borderLayer.lineWidth = width
+        borderLayer.path = UIBezierPath(roundedRect: bounds, byRoundingCorners: .allCorners, cornerRadii: CGSize(width: radius, height: radius)).cgPath
+        
+        layer.addSublayer(borderLayer)
+        return borderLayer
+    }
 }
 
 // MARK:- Animations
@@ -419,4 +454,33 @@ extension UIView {
             if let complete = onCompletion { complete() }
         })
     }
+    
+    func pulse(with duration: TimeInterval, completionHandler: CAAnimation.CAAnimationBlockCallback? = nil) {
+        let pulse = CASpringAnimation(keyPath: "transform.scale")
+        pulse.duration = 0.4
+        pulse.fromValue = 1.0
+        pulse.toValue = 0.9
+        pulse.autoreverses = true
+        pulse.initialVelocity = 0.5
+        pulse.repeatCount = Float(Int(duration / 0.8))
+        pulse.damping = 0.8
+        if let completionHandler = completionHandler {
+            pulse.completionBlock(callback: completionHandler)
+        }
+        layer.add(pulse, forKey: "pulse")
+    }
+}
+
+// MARK:- UIView as Image
+
+extension UIView {
+    // Using a function since `var image` might conflict with an existing variable
+    // (like on `UIImageView`)
+    func asImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { rendererContext in
+            layer.render(in: rendererContext.cgContext)
+        }
+    }
+
 }

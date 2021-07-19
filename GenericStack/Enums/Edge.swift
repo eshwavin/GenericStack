@@ -15,6 +15,7 @@ enum Edge {
     case leading(padding: CGFloat)
     case safeAreaTrailing(padding: CGFloat)
     case trailing(padding: CGFloat)
+    case lessThanTrailing(padding: CGFloat)
     case safeAreaBottom(padding: CGFloat)
     case bottom(padding: CGFloat)
     
@@ -32,6 +33,8 @@ enum Edge {
             return "safeAreaTrailing"
         case .trailing:
             return "trailing"
+        case .lessThanTrailing:
+            return "lessThanTrailing"
         case .safeAreaBottom:
             return "safeAreaBottom"
         case .bottom:

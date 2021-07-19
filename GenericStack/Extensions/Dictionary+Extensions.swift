@@ -15,4 +15,9 @@ extension Dictionary {
         return String(data: data, encoding: .utf8)
     }
     
+    func decode<Object: Decodable>(toType type: Object.Type, decoder: JSONDecoder = JSONDecoder()) throws -> Object? {
+        let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+        return try decoder.decode(Object.self, from: data)
+    }
+    
 }

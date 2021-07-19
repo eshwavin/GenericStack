@@ -12,6 +12,15 @@ import UIKit
 
 extension UIViewController {
     
+    var isModallyPresented: Bool {
+        
+        let presentingIsModal = presentingViewController != nil
+        let presentingIsNavigation = navigationController?.presentingViewController?.presentedViewController == navigationController
+        let presentingIsTabBar = tabBarController?.presentingViewController is UITabBarController
+        
+        return presentingIsModal || presentingIsNavigation || presentingIsTabBar
+    }
+    
     func push(_ viewController: UIViewController) {
         navigationController?.pushViewController(viewController, animated: true)
     }
@@ -34,9 +43,9 @@ extension UIViewController {
         navigationController?.popToRootViewController(animated: true)
     }
     
-    func present(_ viewController: UIViewController, requiresFullScreen: Bool = true, completion: (() -> ())? = nil) {
+    func present(_ viewController: UIViewController, requiresFullScreen: Bool = true, animated: Bool = true, completion: (() -> ())? = nil) {
         viewController.modalPresentationStyle = requiresFullScreen ? .fullScreen : .automatic
-        present(viewController, animated: true, completion: completion)
+        present(viewController, animated: animated, completion: completion)
     }
     
 }
@@ -55,6 +64,13 @@ extension UIViewController {
     func hideBackButtonTitle() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
+    
+    func setNavigationBarToTransparent() {
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = .clear
+    }
+    
 }
 
 // MARK:- Visibility
@@ -65,3 +81,4 @@ extension UIViewController {
     }
 }
 
+extension UIViewController: BaseViewProtocol {}
