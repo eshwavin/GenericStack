@@ -16,6 +16,7 @@ protocol URLRequestConvertible: Alamofire.URLRequestConvertible {
     var pathParameters: [String: Any]? { get }
     var url: URL { get }
     var encoding: ParameterEncoding { get }
+    var headers: [String: String]? { get }
     
 }
 
@@ -24,6 +25,13 @@ extension URLRequestConvertible {
     func asURLRequest() throws -> URLRequest {
         let url = self.url.withPathParameters(pathParameters)
         var urlRequest = URLRequest(url: url)
+        
+        if let headers = headers {
+            for (field, value) in headers {
+                urlRequest.setValue(value, forHTTPHeaderField: field)
+            }
+        }
+        
         urlRequest.httpMethod = method.rawValue
         return try encoding.encode(urlRequest, with: parameters)
     }

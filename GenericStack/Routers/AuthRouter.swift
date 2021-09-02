@@ -46,5 +46,9 @@ enum AuthRouter: URLRequestConvertible {
         }
     }
     
+    var headers: [String : String]? {
+        return nil
+    }
+    
 }
 
