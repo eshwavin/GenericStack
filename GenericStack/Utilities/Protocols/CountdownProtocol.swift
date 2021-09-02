@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CountdownProtocol: class {
+protocol CountdownProtocol: AnyObject {
     var timer: Timer? { get set }
     func startTimer(withTimeInterval interval: TimeInterval)
     func invalidateTimer()
