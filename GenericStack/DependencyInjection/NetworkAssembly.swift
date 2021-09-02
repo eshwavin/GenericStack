@@ -13,10 +13,6 @@ class NetworkAssembly: Assembly {
     
     func assemble(container: Container) {
         
-        container.register(SessionManagerProtocol.self) { _ in
-            return SessionManager()
-        }
-        
         container.register(NetworkHandlerProtocol.self) { _ in
             return NetworkHandler()
         }

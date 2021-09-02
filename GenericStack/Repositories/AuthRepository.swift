@@ -9,14 +9,14 @@
 import Foundation
 
 protocol AuthRepositoryProtocol {
-//    func login(parameters: Encodable, completionHandler: @escaping (Result<User, Error>) -> ())
+    func login(parameters: Encodable, completionHandler: @escaping (Result<User, Error>) -> ())
 }
 
 class AuthRepository: AuthRepositoryProtocol {
 
     @Inject private var networkHandler: NetworkHandlerProtocol
 
-//    func login(parameters: Encodable, completionHandler: @escaping (Result<User, Error>) -> ()) {
-//        networkHandler.request(AuthRouter.login(parameters: parameters)).decoded(toType: User.self).observe(with: completionHandler)
-//    }
+    func login(parameters: Encodable, completionHandler: @escaping (Result<User, Error>) -> ()) {
+        networkHandler.request(AuthRouter.login(parameters: parameters)).decoded(toType: User.self).observe(with: completionHandler)
+    }
 }

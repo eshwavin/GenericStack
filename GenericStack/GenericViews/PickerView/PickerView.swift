@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PickerViewDelegate: class {
+protocol PickerViewDelegate: AnyObject {
     func pickerView(_ pickerView: PickerView, didSelectItem item: PickerRepresentable)
 }
 

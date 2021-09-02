@@ -1,6 +1,6 @@
 import UIKit
 
-@objc protocol CollectionViewDelegate: class {
+@objc protocol CollectionViewDelegate: AnyObject {
     @objc optional func didSelectItem(_ item: CellConfiguratorProtocol, at indexPath: IndexPath)
     @objc optional func shouldSelectItem(at indexPath: IndexPath) -> Bool
     @objc optional func didPullToRefresh()
@@ -9,7 +9,7 @@ import UIKit
     @objc optional func didDeselectItem(_ item: CellConfiguratorProtocol, at indexPath: IndexPath)
 }
 
-protocol CollectionViewSizeProvider: class {
+protocol CollectionViewSizeProvider: AnyObject {
     func sizeForItem(_ item: CellConfiguratorProtocol, at indexPath: IndexPath, layout collectionViewLayout: UICollectionViewLayout) -> CGSize
 }
 
@@ -149,6 +149,10 @@ final class CollectionView: UIView {
         }
     }
     
+    var indexPathsForSelectedItems: [IndexPath]? {
+        return collectionView.indexPathsForSelectedItems
+    }
+    
     init(layout: UICollectionViewLayout,collectionViewDataSource: UICollectionViewDataSource? = nil, collectionViewDelegate: UICollectionViewDelegate? = nil) {
         super.init(frame: .zero)
         
@@ -242,6 +246,12 @@ final class CollectionView: UIView {
     
     func numberOfSections() -> Int {
         return collectionView.numberOfSections
+    }
+    
+    func itemsInSection(_ section: Int) -> [CellConfiguratorProtocol] {
+        itemsQueue.sync {
+            return items[section].cellConfigurators
+        }
     }
     
     // MARK:- Scrolling and selection
@@ -427,7 +437,9 @@ final class CollectionView: UIView {
                     guard let self = self else { return }
                     self.collectionView.performBatchUpdates({
                         self.collectionView.insertItems(at: newIndexPaths)
-                    }, completion: nil)
+                    }) { (success) in
+                        completion?(success)
+                    }
                 }
             }
         }
@@ -595,10 +607,10 @@ final class CollectionView: UIView {
             return CollectionViewSection(header: $0.header, cellConfigurators: filteredConfigurators, footer: $0.footer)
         }
         
-        guard isPrefetchingEnabled else { return }
+        guard isPrefetchingEnabled, let prefetchingOffset = prefetchingOffset else { return }
         
         for (index, filteredItem) in filteredItems.enumerated() {
-            if prefetchingSections.contains(index) && filteredItem.cellConfigurators.count == 0 {
+            if prefetchingSections.contains(index) && filteredItem.cellConfigurators.count < prefetchingOffset {
                 print("PF: Begin \(index)")
                 delegate?.shouldBeginPrefetching?(in: index)
             }

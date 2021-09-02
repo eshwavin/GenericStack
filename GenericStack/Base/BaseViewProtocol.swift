@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol BaseViewProtocol: class {
+protocol BaseViewProtocol: AnyObject {
     func showActivityIndicator(allowingUserInteraction: Bool)
     func hideActivityIndicator()
     func hideBackButtonTitle()

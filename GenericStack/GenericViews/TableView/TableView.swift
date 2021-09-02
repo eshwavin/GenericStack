@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc protocol TableViewDelegate: class {
+@objc protocol TableViewDelegate: AnyObject {
     @objc optional func didSelectRow(with item: CellConfiguratorProtocol)
     @objc optional func didPullToRefresh()
     @objc optional func shouldSelectRow(at indexPath: IndexPath) -> Bool
