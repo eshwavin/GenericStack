@@ -48,4 +48,14 @@ extension Array {
             }
     }
     
+    func indices(where predicate: (Element) -> Bool) -> [Int] {
+        var result: [Int] = []
+        for (index, element) in enumerated() {
+            if predicate(element) {
+                result.append(index)
+            }
+        }
+        return result
+    }
+    
 }

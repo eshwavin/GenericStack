@@ -15,8 +15,8 @@ protocol CollectionViewSizeProvider: AnyObject {
 
 final class CollectionView: UIView {
     
-    private let removeQueue = DispatchQueue(label: "com.QuizBee.removeQueue")
-    private let itemsQueue = DispatchQueue(label: "com.QuizBee.itemsQueue")
+    private let removeQueue = DispatchQueue(label: "com.CollectionView.removeQueue")
+    private let itemsQueue = DispatchQueue(label: "com.CollectionView.itemsQueue")
 
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -153,7 +153,7 @@ final class CollectionView: UIView {
         return collectionView.indexPathsForSelectedItems
     }
     
-    init(layout: UICollectionViewLayout,collectionViewDataSource: UICollectionViewDataSource? = nil, collectionViewDelegate: UICollectionViewDelegate? = nil) {
+    init(layout: UICollectionViewLayout, collectionViewDataSource: UICollectionViewDataSource? = nil, collectionViewDelegate: UICollectionViewDelegate? = nil) {
         super.init(frame: .zero)
         
         collectionView.setCollectionViewLayout(layout, animated: false)
@@ -532,7 +532,7 @@ final class CollectionView: UIView {
         }
     }
     
-    func removeItem(matching predicate: @escaping (CellConfiguratorProtocol) -> Bool, in section: Int, completion: (() -> ())? = nil) {
+    func removeItems(matching predicate: @escaping (CellConfiguratorProtocol) -> Bool, in section: Int, completion: (() -> ())? = nil) {
         
         guard !isFilteringEnabled else { return }
         
@@ -546,15 +546,16 @@ final class CollectionView: UIView {
                     return
                 }
                 
-                if let index = self.items[section].cellConfigurators.firstIndex(where: predicate) {
+                let indices: [Int] = self.items[section].cellConfigurators.indices(where: predicate)
                     
-                    self.items[section].cellConfigurators.remove(at: index)
+                self.items[section].cellConfigurators.remove(at: IndexSet(indices))
                     
-                    let indexPath = IndexPath(item: index, section: section)
-                    
-                    self.collectionView.deleteItems(at: [indexPath])
-                    self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems.filter { $0.section == indexPath.section })
+                let indexPaths = indices.map {
+                    IndexPath(item: $0, section: section)
                 }
+                    
+                self.collectionView.deleteItems(at: indexPaths)
+                
                 
                 completion?()
                 semaphore.signal()
