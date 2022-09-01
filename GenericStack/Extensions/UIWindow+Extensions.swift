@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIWindow {
-    func topViewController(controller: UIViewController? = nil) -> UIViewController? {
+    func topViewController(controller: UIViewController? = nil, shouldConsiderChildViewControllers: Bool = false) -> UIViewController? {
         
         var controller = controller
         
@@ -17,16 +17,20 @@ extension UIWindow {
             controller = rootViewController
         }
         if let navigationController = controller as? UINavigationController {
-            return topViewController(controller: navigationController.visibleViewController)
+            return topViewController(controller: navigationController.visibleViewController, shouldConsiderChildViewControllers: shouldConsiderChildViewControllers)
         }
         if let tabController = controller as? UITabBarController {
             if let selected = tabController.selectedViewController {
-                return topViewController(controller: selected)
+                return topViewController(controller: selected, shouldConsiderChildViewControllers: shouldConsiderChildViewControllers)
             }
         }
         if let presented = controller?.presentedViewController {
-            return topViewController(controller: presented)
+            return topViewController(controller: presented, shouldConsiderChildViewControllers: shouldConsiderChildViewControllers)
         }
+        if shouldConsiderChildViewControllers, let childViewController = controller?.children.first {
+            return topViewController(controller: childViewController, shouldConsiderChildViewControllers: shouldConsiderChildViewControllers)
+        }
+        
         return controller
     }
 
