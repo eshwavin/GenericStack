@@ -58,7 +58,7 @@ final class CollectionView: UIView {
     
     private var contentOffsetRatio: CGPoint = .zero
     
-    // MARK:- Settable Properties
+    // MARK: - Settable Properties
     
     weak var delegate: CollectionViewDelegate?
     weak var sizeProvider: CollectionViewSizeProvider?
@@ -95,9 +95,12 @@ final class CollectionView: UIView {
         }
     }
     
-    var isScrollEnabled: Bool = true {
-        didSet {
-            collectionView.isScrollEnabled = isScrollEnabled
+    var isScrollEnabled: Bool {
+        set {
+            collectionView.isScrollEnabled = newValue
+        }
+        get {
+            return collectionView.isScrollEnabled
         }
     }
     
@@ -172,7 +175,14 @@ final class CollectionView: UIView {
         collectionView.layoutIfNeeded()
     }
     
-    // MARK:- Helpers
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if #unavailable(iOS 14) {
+            reloadData()
+        }
+    }
+    
+    // MARK: - Helpers
     
     private func relevantItem(at indexPath: IndexPath) -> CellConfiguratorProtocol {
         return relevantItems[indexPath.section].cellConfigurators[indexPath.row]
@@ -186,7 +196,7 @@ final class CollectionView: UIView {
         return items[section]
     }
     
-    // MARK:- Exposed API
+    // MARK: - Exposed API
     
     // MARK:- Changing DataSource and Delegate
     
@@ -314,20 +324,21 @@ final class CollectionView: UIView {
     
     // MARK:- Data Loading
     
-    func reloadData() {
+    func reloadData(completion: (() -> ())? = nil) {
         runOnMainThread { [weak self] in
             guard let self = self else { return }
             self.collectionView.reloadData()
+            completion?()
         }
     }
     
-    func refresh(with items: [CollectionViewSection]) {
+    func refresh(with items: [CollectionViewSection], completion: (() -> ())? = nil) {
         itemsQueue.sync {
             self.items = items
             if isFilteringEnabled {
                 setFilteredItems()
             }
-            reloadData()
+            reloadData(completion: completion)
         }
     }
     

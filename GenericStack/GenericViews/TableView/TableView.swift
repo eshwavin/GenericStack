@@ -79,6 +79,12 @@ final class TableView: UIView {
         }
     }
     
+    var selectionStyle: UITableViewCell.SelectionStyle = .default {
+        didSet {
+            reloadData()
+        }
+    }
+    
     var interSectionSpacing: CGFloat? {
         didSet {
             tableView.reloadData()
@@ -125,6 +131,13 @@ final class TableView: UIView {
         addSubview(tableView)
         tableView.pinAllEdges()
         tableView.layoutIfNeeded()
+    }
+    
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if #unavailable(iOS 14) {
+            reloadData()
+        }
     }
     
     // MARK: Helpers
@@ -289,6 +302,8 @@ extension TableView: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: item.reuseID, for: indexPath)
         item.configure(cell: cell, at: indexPath)
+        
+        cell.selectionStyle = selectionStyle
         
         return cell
         
