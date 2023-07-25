@@ -30,7 +30,7 @@ class HomeViewController: UIViewController, HomeViewProtocol {
     
     func changeLabelText(to text: String) {
         testLabel.text = text
-        testLabel.pin(edges: .top(padding: 0), .leading(padding: 0))
+        testLabel.pin(edges: .top(spacing: 0), .leading(spacing: 0))
     }
 
 }

@@ -8,14 +8,14 @@
 
 import UIKit
 
-@objc protocol CellConfiguratorProtocol {
+@objc public protocol CellConfiguratorProtocol {
     var reuseID: String { get }
     func configure(cell: UIView, at indexPath: IndexPath)
 }
 
-final class CellConfigurator<Cell: ConfigurableView, Model>: CellConfiguratorProtocol where Cell.Model == Model {
+final public class CellConfigurator<Cell: ConfigurableView, Model>: CellConfiguratorProtocol where Cell.Model == Model {
     
-    var reuseID: String {
+    public var reuseID: String {
         return String(describing: Cell.self)
     }
     
@@ -27,7 +27,7 @@ final class CellConfigurator<Cell: ConfigurableView, Model>: CellConfiguratorPro
         self.completeConfiguration = completeConfiguration
     }
     
-    func configure(cell: UIView, at indexPath: IndexPath) {
+    public func configure(cell: UIView, at indexPath: IndexPath) {
         completeConfiguration?(cell as! Cell, indexPath)
         (cell as! Cell).configure(with: model)
     }

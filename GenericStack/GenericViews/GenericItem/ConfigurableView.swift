@@ -8,13 +8,13 @@
 
 import Foundation
 
-protocol ConfigurableView {
+public protocol ConfigurableView {
     associatedtype Model
     func configure(with: Model)
 }
 
 // TODO: Check if needed
-extension ConfigurableView {
+public extension ConfigurableView {
     func configure(with model: AnyObject) {
         
     }

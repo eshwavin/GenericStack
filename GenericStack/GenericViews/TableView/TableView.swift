@@ -16,6 +16,9 @@ import UIKit
 
 final class TableView: UIView {
     
+    private let removeQueue = DispatchQueue(label: "com.TableView.removeQueue")
+    private let itemsQueue = DispatchQueue(label: "com.TableView.itemsQueue")
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: self.tableViewStyle)
         tableView.rowHeight = UITableView.automaticDimension
@@ -38,6 +41,11 @@ final class TableView: UIView {
             endRefreshing()
         }
     }
+    
+    private var relevantItems: [TableViewSection] {
+        return isFilteringEnabled ? filteredItems : items
+    }
+    
     private var isFilteringEnabled: Bool = false
     
     private lazy var refreshControl: UIRefreshControl = UIRefreshControl()

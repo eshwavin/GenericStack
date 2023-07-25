@@ -6,18 +6,19 @@
 //  Copyright © 2021 Srivinayak Chaitanya Eshwa. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 final class TableViewSection {
-    let header: TableViewHeaderFooterConfiguratorProtcol?
+    let header: TableViewHeaderFooterConfiguratorProtocol?
     var cellConfigurators: [CellConfiguratorProtocol]
-    let footer: TableViewHeaderFooterConfiguratorProtcol?
+    let trailingSwipeActionsConfiguration: UISwipeActionsConfiguration?
+    let footer: TableViewHeaderFooterConfiguratorProtocol?
     
-    init(header: TableViewHeaderFooterConfiguratorProtcol? = nil, cellConfigurators: [CellConfiguratorProtocol], footer: TableViewHeaderFooterConfiguratorProtcol? = nil) {
+    init(header: TableViewHeaderFooterConfiguratorProtocol? = nil, cellConfigurators: [CellConfiguratorProtocol], trailingSwipeActionsConfiguration: UISwipeActionsConfiguration? = nil, footer: TableViewHeaderFooterConfiguratorProtocol? = nil) {
         self.header = header
         self.cellConfigurators = cellConfigurators
+        self.trailingSwipeActionsConfiguration = trailingSwipeActionsConfiguration
         self.footer = footer
     }
-    
 }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class CollectionViewSection {
+final public class CollectionViewSection {
     let header: CollectionViewHeaderFooterConfiguratorProtocol?
     var cellConfigurators: [CellConfiguratorProtocol]
     let footer: CollectionViewHeaderFooterConfiguratorProtocol?

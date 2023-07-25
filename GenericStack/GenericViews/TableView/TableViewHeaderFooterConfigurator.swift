@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol TableViewHeaderFooterConfiguratorProtcol {
+protocol TableViewHeaderFooterConfiguratorProtocol {
     var reuseID: String { get }
     var height: CGFloat { get }
     func configure(headerFooterView: UIView, at section: Int)
 }
 
-final class TableViewHeaderFooterConfigurator<HeaderFooter: ConfigurableView, Model>: TableViewHeaderFooterConfiguratorProtcol where HeaderFooter.Model == Model {
+final class TableViewHeaderFooterConfigurator<HeaderFooter: ConfigurableView, Model>: TableViewHeaderFooterConfiguratorProtocol where HeaderFooter.Model == Model {
     
     var reuseID: String { return String(describing: HeaderFooter.self) }
     

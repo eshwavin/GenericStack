@@ -21,7 +21,6 @@
 		110C7D0C26A6214C002778B4 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D0B26A6214B002778B4 /* UIDevice+Extensions.swift */; };
 		110C7D0F26A62183002778B4 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D0E26A62183002778B4 /* UIFont+Extensions.swift */; };
 		110C7D1226A621B8002778B4 /* UILabel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1126A621B8002778B4 /* UILabel+Extensions.swift */; };
-		110C7D1526A621F9002778B4 /* UILayoutGuide+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1426A621F9002778B4 /* UILayoutGuide+Extensions.swift */; };
 		110C7D1826A62245002778B4 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1726A62245002778B4 /* UIScrollView+Extensions.swift */; };
 		110C7D1B26A62294002778B4 /* UITextView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1A26A62294002778B4 /* UITextView+Extensions.swift */; };
 		110C7D1E26A623BF002778B4 /* UIWindow+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110C7D1D26A623BF002778B4 /* UIWindow+Extensions.swift */; };
@@ -40,7 +39,6 @@
 		1131B5652540544C00BD3FE0 /* BaseViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B5642540544C00BD3FE0 /* BaseViewProtocol.swift */; };
 		1131B5672540554900BD3FE0 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B5662540554900BD3FE0 /* UIView+Extensions.swift */; };
 		1131B5692540560200BD3FE0 /* NSObject+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B5682540560200BD3FE0 /* NSObject+Extensions.swift */; };
-		1131B56F25405FB600BD3FE0 /* Edge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B56E25405FB500BD3FE0 /* Edge.swift */; };
 		1131B5722540722700BD3FE0 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 1131B5712540722700BD3FE0 /* Swinject */; };
 		1131B5782540727400BD3FE0 /* DependencyLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B5772540727400BD3FE0 /* DependencyLoader.swift */; };
 		1131B57D2540734800BD3FE0 /* Inject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1131B57C2540734800BD3FE0 /* Inject.swift */; };
@@ -63,6 +61,10 @@
 		11770D5D2542649B00A912F4 /* HomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11770D5B2542649B00A912F4 /* HomeViewController.xib */; };
 		11770D5F2542656300A912F4 /* HomeViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11770D5E2542656300A912F4 /* HomeViewPresenter.swift */; };
 		11770D6425426EC600A912F4 /* GestureRecognizerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11770D6325426EC600A912F4 /* GestureRecognizerType.swift */; };
+		1177A1672A706CE10025FCC1 /* Constrainable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177A1662A706CE10025FCC1 /* Constrainable.swift */; };
+		1177A1692A706CE80025FCC1 /* Edge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177A1682A706CE80025FCC1 /* Edge.swift */; };
+		1177A16B2A706CF00025FCC1 /* UIView+Constrainable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177A16A2A706CF00025FCC1 /* UIView+Constrainable.swift */; };
+		1177A16D2A706CFA0025FCC1 /* UILayoutGuide+Constrainable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177A16C2A706CFA0025FCC1 /* UILayoutGuide+Constrainable.swift */; };
 		11DD32452542244700601F89 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DD32442542244700601F89 /* Future.swift */; };
 		11DD32472542244E00601F89 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DD32462542244E00601F89 /* Promise.swift */; };
 		11DD324A2542435200601F89 /* NetworkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DD32492542435200601F89 /* NetworkHandler.swift */; };
@@ -117,7 +119,6 @@
 		110C7D0B26A6214B002778B4 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D0E26A62183002778B4 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D1126A621B8002778B4 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
-		110C7D1426A621F9002778B4 /* UILayoutGuide+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILayoutGuide+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D1726A62245002778B4 /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D1A26A62294002778B4 /* UITextView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Extensions.swift"; sourceTree = "<group>"; };
 		110C7D1D26A623BF002778B4 /* UIWindow+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extensions.swift"; sourceTree = "<group>"; };
@@ -138,7 +139,6 @@
 		1131B5642540544C00BD3FE0 /* BaseViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewProtocol.swift; sourceTree = "<group>"; };
 		1131B5662540554900BD3FE0 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		1131B5682540560200BD3FE0 /* NSObject+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extensions.swift"; sourceTree = "<group>"; };
-		1131B56E25405FB500BD3FE0 /* Edge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edge.swift; sourceTree = "<group>"; };
 		1131B5772540727400BD3FE0 /* DependencyLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyLoader.swift; sourceTree = "<group>"; };
 		1131B57C2540734800BD3FE0 /* Inject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inject.swift; sourceTree = "<group>"; };
 		1131B57E2540742000BD3FE0 /* UserDefaultsBacked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBacked.swift; sourceTree = "<group>"; };
@@ -160,6 +160,10 @@
 		11770D5B2542649B00A912F4 /* HomeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeViewController.xib; sourceTree = "<group>"; };
 		11770D5E2542656300A912F4 /* HomeViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewPresenter.swift; sourceTree = "<group>"; };
 		11770D6325426EC600A912F4 /* GestureRecognizerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureRecognizerType.swift; sourceTree = "<group>"; };
+		1177A1662A706CE10025FCC1 /* Constrainable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constrainable.swift; sourceTree = "<group>"; };
+		1177A1682A706CE80025FCC1 /* Edge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edge.swift; sourceTree = "<group>"; };
+		1177A16A2A706CF00025FCC1 /* UIView+Constrainable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constrainable.swift"; sourceTree = "<group>"; };
+		1177A16C2A706CFA0025FCC1 /* UILayoutGuide+Constrainable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILayoutGuide+Constrainable.swift"; sourceTree = "<group>"; };
 		11DD32442542244700601F89 /* Future.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		11DD32462542244E00601F89 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		11DD32492542435200601F89 /* NetworkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandler.swift; sourceTree = "<group>"; };
@@ -265,6 +269,7 @@
 		1131B54C2540542300BD3FE0 /* GenericStack */ = {
 			isa = PBXGroup;
 			children = (
+				1177A1652A706CD50025FCC1 /* Constrainable */,
 				11770D6225426AAD00A912F4 /* Core */,
 				1131B5762540725C00BD3FE0 /* DependencyInjection */,
 				11770D6025426A8F00A912F4 /* Scenes */,
@@ -318,7 +323,6 @@
 				110C7D0E26A62183002778B4 /* UIFont+Extensions.swift */,
 				11F6D33625D30113008D1B4E /* UIImage+Extensions.swift */,
 				110C7D1126A621B8002778B4 /* UILabel+Extensions.swift */,
-				110C7D1426A621F9002778B4 /* UILayoutGuide+Extensions.swift */,
 				1152B3862546600C00D8E8BB /* UINavigationController+Extensions.swift */,
 				11F6D33925D30164008D1B4E /* UIResponder+Extensions.swift */,
 				110C7D1726A62245002778B4 /* UIScrollView+Extensions.swift */,
@@ -346,7 +350,6 @@
 			isa = PBXGroup;
 			children = (
 				11DD324B254243D000601F89 /* NetworkError.swift */,
-				1131B56E25405FB500BD3FE0 /* Edge.swift */,
 				11770D6325426EC600A912F4 /* GestureRecognizerType.swift */,
 				115E588726E0C24E0014A818 /* MimeType.swift */,
 			);
@@ -418,6 +421,17 @@
 				1131B54F2540542300BD3FE0 /* SceneDelegate.swift */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		1177A1652A706CD50025FCC1 /* Constrainable */ = {
+			isa = PBXGroup;
+			children = (
+				1177A1662A706CE10025FCC1 /* Constrainable.swift */,
+				1177A1682A706CE80025FCC1 /* Edge.swift */,
+				1177A16A2A706CF00025FCC1 /* UIView+Constrainable.swift */,
+				1177A16C2A706CFA0025FCC1 /* UILayoutGuide+Constrainable.swift */,
+			);
+			path = Constrainable;
 			sourceTree = "<group>";
 		};
 		11DD32482542308A00601F89 /* NetworkStack */ = {
@@ -613,13 +627,16 @@
 				110C7D0326A62037002778B4 /* RunOnMainThread.swift in Sources */,
 				110C7D1226A621B8002778B4 /* UILabel+Extensions.swift in Sources */,
 				110C7D2C26A626CC002778B4 /* CustomFont.swift in Sources */,
+				1177A1692A706CE80025FCC1 /* Edge.swift in Sources */,
 				11DD324C254243D000601F89 /* NetworkError.swift in Sources */,
 				1131B5832540858E00BD3FE0 /* InjectSettings.swift in Sources */,
 				1152B38B2546629100D8E8BB /* Result+Extension.swift in Sources */,
 				11DD32472542244E00601F89 /* Promise.swift in Sources */,
 				110C7CEA26A61BCD002778B4 /* Array+Extensions.swift in Sources */,
+				1177A16D2A706CFA0025FCC1 /* UILayoutGuide+Constrainable.swift in Sources */,
 				11F6D31B25D2FDBA008D1B4E /* CAAnimation+Extensions.swift in Sources */,
 				115E588826E0C24E0014A818 /* MimeType.swift in Sources */,
+				1177A1672A706CE10025FCC1 /* Constrainable.swift in Sources */,
 				1131B5672540554900BD3FE0 /* UIView+Extensions.swift in Sources */,
 				110C7D0026A61FD3002778B4 /* NSRegularExpression+Extensions.swift in Sources */,
 				110C7D0C26A6214C002778B4 /* UIDevice+Extensions.swift in Sources */,
@@ -633,10 +650,10 @@
 				1131B587254086A900BD3FE0 /* PresenterAssembly.swift in Sources */,
 				11770D5F2542656300A912F4 /* HomeViewPresenter.swift in Sources */,
 				11F6D33725D30113008D1B4E /* UIImage+Extensions.swift in Sources */,
+				1177A16B2A706CF00025FCC1 /* UIView+Constrainable.swift in Sources */,
 				11F6D33125D30083008D1B4E /* TimeInterval+Extensions.swift in Sources */,
 				110C7D1E26A623BF002778B4 /* UIWindow+Extensions.swift in Sources */,
 				1131B5582540542300BD3FE0 /* GenericStack.xcdatamodeld in Sources */,
-				1131B56F25405FB600BD3FE0 /* Edge.swift in Sources */,
 				110C7D2226A62505002778B4 /* PickerRepresentable.swift in Sources */,
 				11F6D35225D3045D008D1B4E /* CollectionViewHeaderFooterProtocol.swift in Sources */,
 				1152B3892546618B00D8E8BB /* UIColor+Extensions.swift in Sources */,
@@ -644,7 +661,6 @@
 				1113A81B2542CC7C00CF79AB /* AlertBuilder.swift in Sources */,
 				11DD325625424A6100601F89 /* AuthRepository.swift in Sources */,
 				115E588626E0C2230014A818 /* File.swift in Sources */,
-				110C7D1526A621F9002778B4 /* UILayoutGuide+Extensions.swift in Sources */,
 				11F6D33A25D30164008D1B4E /* UIResponder+Extensions.swift in Sources */,
 				11F6D32B25D2FF6E008D1B4E /* NSLayoutConstraint+Extensions.swift in Sources */,
 				110C7D1B26A62294002778B4 /* UITextView+Extensions.swift in Sources */,
