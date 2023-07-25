@@ -27,7 +27,7 @@ public enum Edge {
     case lessThanSafeAreaTrailing(spacing: CGFloat)
     case lessThanTrailing(spacing: CGFloat)
     
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case .safeAreaTop:
             return "safeAreaTop"

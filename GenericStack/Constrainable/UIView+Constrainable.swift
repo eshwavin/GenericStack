@@ -9,16 +9,16 @@
 import UIKit
 
 extension UIView: Constrainable {
-    var container: Constrainable? {
+    public var container: Constrainable? {
         return superview
     }
     
-    var optionalSafeAreaLayoutGuide: UILayoutGuide? {
+    public var optionalSafeAreaLayoutGuide: UILayoutGuide? {
         return safeAreaLayoutGuide
     }
 }
 
-extension UIView {
+public extension UIView {
     func addConstrainable(_ constrainable: Constrainable) {
         if let view = constrainable as? UIView {
             addSubview(view)

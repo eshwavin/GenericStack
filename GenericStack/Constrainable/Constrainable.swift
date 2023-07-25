@@ -8,9 +8,8 @@
 
 import UIKit
 
-protocol Constrainable: AnyObject {
+public protocol Constrainable: AnyObject {
     var container: Constrainable? { get }
-    var translatesAutoresizingMaskIntoConstraints: Bool { get set }
     
     var leadingAnchor: NSLayoutXAxisAnchor { get }
     var trailingAnchor: NSLayoutXAxisAnchor { get }
@@ -24,10 +23,11 @@ protocol Constrainable: AnyObject {
     var centerYAnchor: NSLayoutYAxisAnchor { get }
     
     var optionalSafeAreaLayoutGuide: UILayoutGuide? { get }
+    var translatesAutoresizingMaskIntoConstraints: Bool { get set }
 }
 
 // MARK: - All Edges
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pin(edges: Edge..., to constrainable: Constrainable? = nil) -> [String: NSLayoutConstraint] {
         
@@ -167,7 +167,7 @@ extension Constrainable {
 }
 
 // MARK: - Top
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pinTopToSafeArea(of view: UIView? = nil, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         let edge: Edge = .safeAreaTop(spacing: spacing)
@@ -183,7 +183,7 @@ extension Constrainable {
 }
 
 // MARK: - Bottom
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pinBottomToSafeArea(of view: UIView? = nil, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         let edge: Edge = .safeAreaBottom(spacing: spacing)
@@ -198,7 +198,7 @@ extension Constrainable {
 }
 
 // MARK: - Leading
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pinLeadingToSafeArea(of view: UIView? = nil, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         let edge: Edge = .safeAreaLeading(spacing: spacing)
@@ -213,7 +213,7 @@ extension Constrainable {
 }
 
 // MARK: - Trailing
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pinTrailingToSafeArea(of view: UIView? = nil, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         let edge: Edge = .safeAreaTrailing(spacing: spacing)
@@ -228,7 +228,7 @@ extension Constrainable {
 }
 
 // MARK: - Other Vertical
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pinTopToBottom(of constrainable: Constrainable, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         translatesAutoresizingMaskIntoConstraints = false
@@ -261,7 +261,7 @@ extension Constrainable {
 }
 
 // MARK: - Other Horizontal
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func pinLeadingToTrailing(of constrainable: Constrainable, withSpacing spacing: CGFloat) -> NSLayoutConstraint {
         translatesAutoresizingMaskIntoConstraints = false
@@ -294,7 +294,7 @@ extension Constrainable {
 }
 
 // MARK: - Center
-extension Constrainable {
+public extension Constrainable {
     
     @discardableResult func centerX(to constrainable: Constrainable? = nil, withOffset offset: CGFloat = 0) -> NSLayoutConstraint {
         
@@ -336,7 +336,7 @@ extension Constrainable {
 }
 
 // MARK: - Dimensions
-extension Constrainable {
+public extension Constrainable {
     
     // MARK: Height
     
@@ -437,7 +437,7 @@ extension Constrainable {
 }
 
 // MARK: - Helpers
-extension Constrainable {
+public extension Constrainable {
     
     func pinEdge(_ edge: Edge, to constrainable: Constrainable? = nil) -> NSLayoutConstraint {
         return pin(edges: edge, to: constrainable)[edge.rawValue]!

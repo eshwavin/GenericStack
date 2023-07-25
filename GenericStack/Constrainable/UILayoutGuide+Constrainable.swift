@@ -9,11 +9,11 @@
 import UIKit
 
 extension UILayoutGuide: Constrainable {
-    var container: Constrainable? {
+    public var container: Constrainable? {
         return owningView
     }
     
-    var translatesAutoresizingMaskIntoConstraints: Bool {
+    public var translatesAutoresizingMaskIntoConstraints: Bool {
         get {
             return false
         }
@@ -22,7 +22,7 @@ extension UILayoutGuide: Constrainable {
         }
     }
     
-    var optionalSafeAreaLayoutGuide: UILayoutGuide? {
+    public var optionalSafeAreaLayoutGuide: UILayoutGuide? {
         return nil
     }
 }
